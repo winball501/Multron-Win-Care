@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "dgSpecHash": "wqNEYyWUyTE=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\winba\\source\\repos\\MultronWinCare\\MultronWinCare\\MultronWinCare.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\winba\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
+    "C:\\Users\\winba\\.nuget\\packages\\system.codedom\\9.0.9\\system.codedom.9.0.9.nupkg.sha512",
+    "C:\\Users\\winba\\.nuget\\packages\\system.diagnostics.eventlog\\9.0.9\\system.diagnostics.eventlog.9.0.9.nupkg.sha512",
+    "C:\\Users\\winba\\.nuget\\packages\\system.management\\9.0.9\\system.management.9.0.9.nupkg.sha512",
+    "C:\\Users\\winba\\.nuget\\packages\\system.security.accesscontrol\\6.0.1\\system.security.accesscontrol.6.0.1.nupkg.sha512",
+    "C:\\Users\\winba\\.nuget\\packages\\system.security.principal.windows\\5.0.0\\system.security.principal.windows.5.0.0.nupkg.sha512",
+    "C:\\Users\\winba\\.nuget\\packages\\system.serviceprocess.servicecontroller\\9.0.9\\system.serviceprocess.servicecontroller.9.0.9.nupkg.sha512",
+    "C:\\Users\\winba\\.nuget\\packages\\taskscheduler\\2.12.2\\taskscheduler.2.12.2.nupkg.sha512"
+  ],
+  "logs": []
+}
