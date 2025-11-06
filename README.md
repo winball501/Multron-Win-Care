@@ -40,6 +40,8 @@ Community & Support
 Join the official Multron Win Care Discord community for support, feedback, and updates:
 https://discord.gg/eBsJgbYEj4
 You may want support us: https://buymeacoffee.com/multron
+
+
 License
 
 This project is licensed under the AAL License.
