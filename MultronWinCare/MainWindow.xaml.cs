@@ -3375,36 +3375,36 @@ namespace MultronWinCare
             }
          
         }
-        public async Task disablewindowsdefenderui()
-        {
-            int remake = 12;
-            int tried = 0;
-            DefenderStatusLabel.Text = "Microsoft Defender disablement UI process is in progress...";
-            await Task.Run(async() => {
-                while (tried < remake)
-                {
-                    RegistryKey securityhealthservice = null;
+           public async Task disablewindowsdefenderui()
+    {
+        int remake = 12;
+        int tried = 0;
+        DefenderStatusLabel.Text = "Microsoft Defender disablement UI process is in progress...";
+        await Task.Run(async() => {
+            while (tried < remake)
+            {
+                RegistryKey securityhealthservice = null;
 
-                    RegistryKey windowsdefenderui = null;
-                    try { securityhealthservice = Registry.LocalMachine.OpenSubKey(@"SYSTEM\\CurrentControlSet\\Services\\SecurityHealthService"); } catch { }
-                    try { securityhealthservice?.SetValue("Start", 4, RegistryValueKind.DWord); } catch { }
-                    try { securityhealthservice?.Close(); } catch { }
+                RegistryKey windowsdefenderui = null;
+                try { securityhealthservice = Registry.LocalMachine.CreateSubKey(@"SYSTEM\\CurrentControlSet\\Services\\SecurityHealthService", true); } catch { }
+                try { securityhealthservice?.SetValue("Start", 4, RegistryValueKind.DWord); } catch { }
+                try { securityhealthservice?.Close(); } catch { }
 
 
 
-                    try { windowsdefenderui = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Policy Manager"); } catch { }
-                    try { windowsdefenderui?.SetValue("AllowUserUIAccess", 1, RegistryValueKind.DWord); } catch { }
-                    try { windowsdefenderui?.Close(); } catch { }
-                    tried++;
-                    await Task.Delay(50);
-                }
-            });
+                try { windowsdefenderui = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Policy Manager", true); } catch { }
+                try { windowsdefenderui?.SetValue("AllowUserUIAccess", 1, RegistryValueKind.DWord); } catch { }
+                try { windowsdefenderui?.Close(); } catch { }
+                tried++;
+                await Task.Delay(50);
+            }
+        });
 
-         
+     
 
-        
+    
 
-        }
+    }
         public async Task uilockdowndisable()
         {
            
