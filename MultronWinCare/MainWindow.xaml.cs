@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
@@ -3375,36 +3375,36 @@ namespace MultronWinCare
             }
          
         }
-           public async Task disablewindowsdefenderui()
-    {
-        int remake = 12;
-        int tried = 0;
-        DefenderStatusLabel.Text = "Microsoft Defender disablement UI process is in progress...";
-        await Task.Run(async() => {
-            while (tried < remake)
-            {
-                RegistryKey securityhealthservice = null;
+        public async Task disablewindowsdefenderui()
+        {
+            int remake = 12;
+            int tried = 0;
+            DefenderStatusLabel.Text = "Microsoft Defender disablement UI process is in progress...";
+            await Task.Run(async() => {
+                while (tried < remake)
+                {
+                    RegistryKey securityhealthservice = null;
 
-                RegistryKey windowsdefenderui = null;
-                try { securityhealthservice = Registry.LocalMachine.CreateSubKey(@"SYSTEM\\CurrentControlSet\\Services\\SecurityHealthService", true); } catch { }
-                try { securityhealthservice?.SetValue("Start", 4, RegistryValueKind.DWord); } catch { }
-                try { securityhealthservice?.Close(); } catch { }
+                    RegistryKey windowsdefenderui = null;
+                    try { securityhealthservice = Registry.LocalMachine.CreateSubKey(@"SYSTEM\\CurrentControlSet\\Services\\SecurityHealthService", true); } catch { }
+                    try { securityhealthservice?.SetValue("Start", 4, RegistryValueKind.DWord); } catch { }
+                    try { securityhealthservice?.Close(); } catch { }
 
 
 
-                try { windowsdefenderui = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Policy Manager", true); } catch { }
-                try { windowsdefenderui?.SetValue("AllowUserUIAccess", 1, RegistryValueKind.DWord); } catch { }
-                try { windowsdefenderui?.Close(); } catch { }
-                tried++;
-                await Task.Delay(50);
-            }
-        });
+                    try { windowsdefenderui = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Policy Manager", true); } catch { }
+                    try { windowsdefenderui?.SetValue("AllowUserUIAccess", 1, RegistryValueKind.DWord); } catch { }
+                    try { windowsdefenderui?.Close(); } catch { }
+                    tried++;
+                    await Task.Delay(50);
+                }
+            });
 
-     
+         
 
-    
+        
 
-    }
+        }
         public async Task uilockdowndisable()
         {
            
@@ -4013,24 +4013,24 @@ namespace MultronWinCare
                     RegistryKey wdFeatures = null; 
                    
 
-                    try { wdFeatures = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows Defender\Features", true); } catch { }
-                    try { defendertelemetry = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender\Reporting", true); } catch { }
-                    try { MDCoreSvc = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\MDCoreSvc", true); } catch { }
-                    try { micdef = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows Defender", true); } catch { }
-                    try { softdef = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender", true); } catch { }
-                    try { wscsvc = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\wscsvc", true); } catch { }
-                    try { windefendservice = Registry.LocalMachine.OpenSubKey(@"System\CurrentControlSet\Services\WinDefend", true); } catch { }
-                    try { sense_service = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Sense", true); } catch { }
-                    try { wd_boot = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\WdBoot", true); } catch { }
-                    try { wd_filter = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\WdFilter", true); } catch { }
-                    try { wd_nis_drv = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\WdNisDrv", true); } catch { }
-                    try { wd_nis_svc = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\WdNisSvc", true); } catch { }
-                    try { windowsdefendersystem = Registry.LocalMachine.OpenSubKey(@"SYSTEM\SOFTWARE\Policies\Microsoft\Windows Defender", true); } catch { }
-                    try { wdrealtimeprotection = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection", true); } catch { }
-                    try { wdrealtimeprotectionSystem = Registry.LocalMachine.OpenSubKey(@"SYSTEM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection", true); } catch { }
-                    try { SignatureUpdateSystem = Registry.LocalMachine.OpenSubKey(@"SYSTEM\SOFTWARE\Policies\Microsoft\Windows Defender\Signature Update", true); } catch { }
-                    try { spynet = Registry.LocalMachine.OpenSubKey(@"SYSTEM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet", true); } catch { }
-                    try { windowsdefender = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender", true); } catch { }
+                    try { wdFeatures = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows Defender\Features", true); } catch { }
+                    try { defendertelemetry = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender\Reporting", true); } catch { }
+                    try { MDCoreSvc = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\MDCoreSvc", true); } catch { }
+                    try { micdef = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows Defender", true); } catch { }
+                    try { softdef = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender", true); } catch { }
+                    try { wscsvc = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\wscsvc", true); } catch { }
+                    try { windefendservice = Registry.LocalMachine.CreateSubKey(@"System\CurrentControlSet\Services\WinDefend", true); } catch { }
+                    try { sense_service = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\Sense", true); } catch { }
+                    try { wd_boot = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\WdBoot", true); } catch { }
+                    try { wd_filter = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\WdFilter", true); } catch { }
+                    try { wd_nis_drv = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\WdNisDrv", true); } catch { }
+                    try { wd_nis_svc = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\WdNisSvc", true); } catch { }
+                    try { windowsdefendersystem = Registry.LocalMachine.CreateSubKey(@"SYSTEM\SOFTWARE\Policies\Microsoft\Windows Defender", true); } catch { }
+                    try { wdrealtimeprotection = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection", true); } catch { }
+                    try { wdrealtimeprotectionSystem = Registry.LocalMachine.CreateSubKey(@"SYSTEM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection", true); } catch { }
+                    try { SignatureUpdateSystem = Registry.LocalMachine.CreateSubKey(@"SYSTEM\SOFTWARE\Policies\Microsoft\Windows Defender\Signature Update", true); } catch { }
+                    try { spynet = Registry.LocalMachine.CreateSubKey(@"SYSTEM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet", true); } catch { }
+                    try { windowsdefender = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender", true); } catch { }
 
                     try { wdFeatures?.SetValue("MpPlatformKillbitsFromEngine", new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, RegistryValueKind.Binary); } catch { }
                     try { wdFeatures?.SetValue("TamperProtectionSource", 0, RegistryValueKind.DWord); } catch { }
@@ -4437,19 +4437,19 @@ namespace MultronWinCare
 
                             RegistryKey SecurityCenter = null;
 
-                            try { mpssvc = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\mpssvc", true); } catch { }
-                            try { BFE = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\BFE", true); } catch { }
-                            try { DomainProfile = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile", true); } catch { }
-                            try { DomainProfileLogging = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile\Logging", true); } catch { }
-                            try { StandardProfile = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile", true); } catch { }
-                            try { StandardProfileLogging = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile\Logging", true); } catch { }
-                            try { PublicProfile = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\PublicProfile", true); } catch { }
-                            try { PublicProfileLogging = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\PublicProfile\Logging", true); } catch { }
+                            try { mpssvc = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\mpssvc", true); } catch { }
+                            try { BFE = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\BFE", true); } catch { }
+                            try { DomainProfile = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile", true); } catch { }
+                            try { DomainProfileLogging = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile\Logging", true); } catch { }
+                            try { StandardProfile = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile", true); } catch { }
+                            try { StandardProfileLogging = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile\Logging", true); } catch { }
+                            try { PublicProfile = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\PublicProfile", true); } catch { }
+                            try { PublicProfileLogging = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\PublicProfile\Logging", true); } catch { }
 
-                            try { PoliciesDomainProfile = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile", true); } catch { }
-                            try { PoliciesStandardProfile = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile", true); } catch { }
-                            try { PoliciesPublicProfile = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile", true); } catch { }
-                            try { SecurityCenter = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Security Center"); } catch { }
+                            try { PoliciesDomainProfile = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile", true); } catch { }
+                            try { PoliciesStandardProfile = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile", true); } catch { }
+                            try { PoliciesPublicProfile = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile", true); } catch { }
+                            try { SecurityCenter = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Security Center"); } catch { }
 
                             try { SecurityCenter?.SetValue("FirewallOverride", "1", RegistryValueKind.DWord); } catch { }
 
@@ -4536,8 +4536,8 @@ namespace MultronWinCare
                 {
                     RegistryKey NotificationsUpdate = null;
                     RegistryKey UXSettings = null;
-                    try { NotificationsUpdate = Registry.LocalMachine.OpenSubKey(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.WindowsUpdate.MoNotification2", true); } catch { }
-                    try { UXSettings = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\WindowsUpdate\UX\Settings", true); } catch { }
+                    try { NotificationsUpdate = Registry.LocalMachine.CreateSubKey(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.WindowsUpdate.MoNotification2", true); } catch { }
+                    try { UXSettings = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\WindowsUpdate\UX\Settings", true); } catch { }
                     try { NotificationsUpdate?.SetValue("Enabled", 0, RegistryValueKind.DWord); } catch { }
                     try { NotificationsUpdate?.Close(); } catch { }
                     try { UXSettings?.SetValue("TrayIconVisibility", 0, RegistryValueKind.DWord); } catch { }
@@ -4982,10 +4982,10 @@ namespace MultronWinCare
                     RegistryKey WaaSMedicSvc = null;
                     RegistryKey DeliveryOptimization = null;
                 
-                    try { wuauserv = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\wuauserv", true); } catch { }
-                    try { UsoSvc = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\UsoSvc", true); } catch { }
-                    try { WaaSMedicSvc  = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\WaaSMedicSvc", true); } catch { }
-                    try { DeliveryOptimization = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization", true); } catch { }
+                    try { wuauserv = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\wuauserv", true); } catch { }
+                    try { UsoSvc = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\UsoSvc", true); } catch { }
+                    try { WaaSMedicSvc  = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\WaaSMedicSvc", true); } catch { }
+                    try { DeliveryOptimization = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization", true); } catch { }
 
                     try { wuauserv?.SetValue("Start", 4, RegistryValueKind.DWord); } catch { }
                     try { wuauserv?.Close(); } catch { }
