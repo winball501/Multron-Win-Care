@@ -1,4 +1,4 @@
-Multron Win Care (Beta v1.0)
+Multron Win Care (Beta)
 
 Multron Win Care is a Windows utility designed to give users advanced control over system security, update, and privacy settings — all in one place.
 It provides to manage Windows Update, Microsoft Defender, and Firewall settings, along with privacy and telemetry controls.
@@ -25,7 +25,7 @@ Simple, clear interface for privacy customization. This section is not done yet.
 
 Current Status
 
-This software is currently in Beta Version 1.0.
+This software is currently in Beta Version.
 Some features may not be fully implemented or may change in future releases.
 Your feedback and suggestions are welcome to help improve stability and usability.
 
