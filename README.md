@@ -46,5 +46,6 @@ License
 
 This project is licensed under the AAL License.
 
-<img width="1718" height="869" alt="image" src="https://github.com/user-attachments/assets/c9bb98be-b920-4e87-95cc-273a792a4a4f" />
-<img width="1718" height="870" alt="image" src="https://github.com/user-attachments/assets/ca483e09-cd24-4cc5-a1d2-264976521837" />
+ <img width="1100" height="600" alt="mcarelight" src="https://github.com/user-attachments/assets/a1c8e79b-b00d-4d3e-bcdf-fcb3fbd4470b" />
+<img width="1100" height="600" alt="mcaredark" src="https://github.com/user-attachments/assets/797b8e5e-0b95-4d16-8850-6d0509a1e3b8" />
+
