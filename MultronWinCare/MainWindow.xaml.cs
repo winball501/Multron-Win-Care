@@ -4902,11 +4902,11 @@ namespace MultronWinCare
                     RegistryKey cvdriversearching = null;
                     RegistryKey devicemetadata = null;
                     RegistryKey deviceinstaller = null;
-                    try { winupdate = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate", true); } catch { }
-                    try { driversearching = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows\DriverSearching", true); } catch { }
-                    try { cvdriversearching = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching", true); } catch { }
-                    try { devicemetadata = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Device Metadata", true); } catch { }
-                    try { deviceinstaller = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Device Installer", true); } catch { }
+                    try { winupdate = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate", true); } catch { }
+                    try { driversearching = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\DriverSearching", true); } catch { }
+                    try { cvdriversearching = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching", true); } catch { }
+                    try { devicemetadata = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Device Metadata", true); } catch { }
+                    try { deviceinstaller = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Device Installer", true); } catch { }
 
                     try { winupdate?.SetValue("ExcludeWUDriversInQualityUpdate", "1", RegistryValueKind.DWord); } catch { }
                     try { winupdate?.Close(); } catch { }
@@ -5046,7 +5046,7 @@ namespace MultronWinCare
                 }
                 else
                 {
-                    status += "Windows Windows Update Notifications Disable Actions Applied.";
+                    status += "Windows Update Notifications Disable Actions Applied.";
                 }
             }
             if (EnableAutoUpdateRadio.IsChecked == true)
