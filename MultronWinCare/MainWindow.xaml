@@ -10,7 +10,7 @@
         Background="#1e1e1e" WindowStartupLocation="CenterScreen"
     
         WindowStyle="None" AllowsTransparency="True" ResizeMode="CanResize" Loaded="Window_Loaded">
-
+  
     <Window.Resources>
         
         <Color x:Key="BaseBlack">#FF0F1113</Color>
@@ -634,7 +634,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0,0,0">
-                         <TextBlock Text="Multron WinCare v1.1 beta" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" VerticalAlignment="Center"/>
+                         <TextBlock Text="Multron WinCare v1.2 beta" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" VerticalAlignment="Center"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
@@ -842,7 +842,7 @@
  
                             <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
                                 <StackPanel>
-                                    <TextBlock Text="Multron WinCare v1.1 beta" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource PrimaryText}" Margin="0,0,0,10"/>
+                                    <TextBlock Text="Multron WinCare v1.2 beta" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource PrimaryText}" Margin="0,0,0,10"/>
                                     <TextBlock Text="BETA VERSION - UNDER ACTIVE DEVELOPMENT" FontSize="14" FontWeight="Bold" Foreground="#FFE91E63" Margin="0,0,0,15"/>
 
                                     <TextBlock TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource SecondaryText}" Margin="0,0,0,20">
@@ -1080,8 +1080,8 @@
                                         <Border Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="25">
                                             <StackPanel HorizontalAlignment="Center">
                                                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE946;" FontSize="48" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                                                <TextBlock Text="Version 1.1 Beta" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="Build 2025.11.7" FontSize="12" Foreground="{DynamicResource SecondaryText}" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                                <TextBlock Text="Version 1.2 Beta" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Build 2025.11.14" FontSize="12" Foreground="{DynamicResource SecondaryText}" HorizontalAlignment="Center" Margin="0,4,0,0"/>
                                             </StackPanel>
                                         </Border>
                                     </StackPanel>
@@ -1151,10 +1151,10 @@
                                             <RadioButton x:Name="DoNothingAutoRadio" Content="Do Nothing" GroupName="AutoUpdateOptions" Margin="0,8,0,15" IsChecked="True"/>
                                         </StackPanel>
 
-                                        <TextBlock Text="Driver Updates Options:" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" Margin="0,10,0,5"/>
+                                        <TextBlock Text="Driver Updates &amp; Download Options:" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" Margin="0,10,0,5"/>
                                         <StackPanel Margin="0,5,0,0">
-                                            <RadioButton x:Name="EnableDriverUpdateRadio" Content="Enable Automatic Driver Updates" GroupName="DriverUpdateOptions" Margin="0,8,0,0"/>
-                                            <RadioButton x:Name="DisableDriverUpdateRadio" Content="Disable Automatic Driver Updates" GroupName="DriverUpdateOptions" Margin="0,8,0,0"/>
+                                            <RadioButton x:Name="EnableDriverUpdateRadio" Content="Enable Driver Updates &amp; Download" GroupName="DriverUpdateOptions" Margin="0,8,0,0"/>
+                                            <RadioButton x:Name="DisableDriverUpdateRadio" Content="Disable Driver Updates &amp; Download" GroupName="DriverUpdateOptions" Margin="0,8,0,0"/>
                                             <RadioButton x:Name="DoNothingDriverRadio" Content="Do Nothing" GroupName="DriverUpdateOptions" Margin="0,8,0,15" IsChecked="True"/>
                                         </StackPanel>
 
