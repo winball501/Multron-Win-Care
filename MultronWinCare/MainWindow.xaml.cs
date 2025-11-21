@@ -453,7 +453,7 @@ namespace MultronWinCare
                 
                     RegistryKey deviceMetadata = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata");
 
-                    RegistryKey bluetoothToastNotifications = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.BluetoothDevice");
+                    RegistryKey bluetoothToastNotifications = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.BluetoothDevice");
                     RegistryKey currentuseraccountinfo = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation");
 
                     RegistryKey currentuserExplorerAdvanced = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced");
@@ -2702,7 +2702,13 @@ namespace MultronWinCare
                     RegistryKey devicesecurity = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows Defender Security Center\Device security");
                     RegistryKey familyoptions = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows Defender Security Center\Family options");
                     RegistryKey firewallandnetworkprotection = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows Defender Security Center\Firewall and network protection");
-                   
+                    RegistryKey wdscnotify = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows Defender Security Center\Notifications");
+                    RegistryKey mwdscnotify = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications");
+                    RegistryKey uxnotify = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender\UX Configuration");
+                    RegistryKey securityandmaintenanceToastNotify = Registry.Users.CreateSubKey(UserHelper.GetActiveUserSID() + @"\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.SecurityAndMaintenance");
+                    RegistryKey WindowsExplorer = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Explorer");
+                    RegistryKey securitycenter = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Security Center");
+                    RegistryKey securitycenterchangesinacitoncenter = Registry.Users.CreateSubKey(UserHelper.GetActiveUserSID() + @"\Software\Microsoft\Windows\CurrentVersion\Action Center\Checks");
                     while (true)
                         {
 
@@ -2732,7 +2738,132 @@ namespace MultronWinCare
                             {
                                 servicestatus = "WinDefend service does not exists.";
                             }
+                            if (securitycenterchangesinacitoncenter != null)
+                            {
+                                string[] subkeys5 = securitycenterchangesinacitoncenter.GetValueNames();
 
+                                if (subkeys5.Length > 0)
+                                {
+                                    foreach (var name in subkeys5)
+                                    {
+                                        main.windefendlogs.Add("Action Center: " + name + " in " + securitycenterchangesinacitoncenter.Name);
+                                    }
+                                    registrychanges += subkeys5.Length;
+                                    registrystatus = "and found " + registrychanges + " registry changes.";
+                                }
+                            }
+                          
+                            if (securityandmaintenanceToastNotify != null)
+                            {
+                                object startValue = securityandmaintenanceToastNotify?.GetValue("Start");
+                                if (startValue != null)
+                                {
+                                    int startInt = (int)startValue;
+                                    if (startInt != 0)
+                                    {
+                                        main.windefendlogs.Add("Security And Maintenance: Enabled value found and is changed to  =  " + startInt + " location: " + securitycenterchangesinacitoncenter.Name + " default value (1)");
+                                        registrychanges += 1;
+                                        registrystatus = "and found " + registrychanges + " changes.";
+                                    }
+                                }
+                              
+
+                            }
+                            else
+                            {
+                                main.windefendlogs.Add("Security And Maintenance: " + "Software\\Microsoft\\Windows\\CurrentVersion\\Notifications\\Settings\\Windows.SystemToast.SecurityAndMaintenance" + " not found.");
+                                registrychanges += 1;
+                                registrystatus = "and found " + registrychanges + " registry changes.";
+                            }
+                            if (securitycenter != null)
+                            {
+                                string[] subkeys5 = securitycenter.GetValueNames();
+
+                                if (subkeys5.Length > 1)
+                                {
+                                    foreach (var name in subkeys5)
+                                    {
+                                        main.windefendlogs.Add("Security And Maintenance Notifications: " + name + " in " + securitycenter.Name);
+                                    }
+                                    registrychanges += subkeys5.Length;
+                                    registrystatus = "and found " + registrychanges + " registry changes.";
+                                }
+                            }
+                            else
+                            {
+                                main.windefendlogs.Add("Security And Maintenance Notifications: " + "SOFTWARE\\Microsoft\\Security Center" + " not found.");
+                                registrychanges += 1;
+                                registrystatus = "and found " + registrychanges + " registry changes.";
+                            }
+                            if (WindowsExplorer != null)
+                            {
+                                string[] subkeys5 = WindowsExplorer.GetValueNames();
+
+                                if (subkeys5.Length > 0)
+                                {
+                                    foreach (var name in subkeys5)
+                                    {
+                                        main.windefendlogs.Add("Security And Maintenance Notifications: " + name + " in " + WindowsExplorer.Name);
+                                    }
+                                    registrychanges += subkeys5.Length;
+                                    registrystatus = "and found " + registrychanges + " registry changes.";
+                                }
+                            }
+                            else
+                            {
+                                main.windefendlogs.Add("Security And Maintenance Notifications: " + "SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer" + " not found.");
+                                registrychanges += 1;
+                                registrystatus = "and found " + registrychanges + " registry changes.";
+                            }
+                            if (uxnotify != null)
+                            {
+                                string[] subkeys5 = uxnotify.GetValueNames();
+
+                                if (subkeys5.Length > 0)
+                                {
+                                    foreach (var name in subkeys5)
+                                    {
+                                        main.windefendlogs.Add("Windows Security Notifications: " + name + " in " + uxnotify.Name);
+                                    }
+                                    registrychanges += subkeys5.Length;
+                                    registrystatus = "and found " + registrychanges + " registry changes.";
+                                }
+                            }
+                            if (mwdscnotify != null)
+                            {
+                                string[] subkeys5 = mwdscnotify.GetValueNames();
+
+                                if (subkeys5.Length > 0)
+                                {
+                                    foreach (var name in subkeys5)
+                                    {
+                                        main.windefendlogs.Add("Windows Security Notifications: " + name + " in " + mwdscnotify.Name);
+                                    }
+                                    registrychanges += subkeys5.Length;
+                                    registrystatus = "and found " + registrychanges + " registry changes.";
+                                }
+                            }
+
+                            if (wdscnotify != null)
+                            {
+                                string[] subkeys5 = wdscnotify.GetValueNames();
+
+                                if (subkeys5.Length > 0)
+                                {
+                                    foreach (var name in subkeys5)
+                                    {
+                                        main.windefendlogs.Add("Windows Security Notifications: " + name + " in " + wdscnotify.Name);
+                                    }
+                                    registrychanges += subkeys5.Length;
+                                    registrystatus = "and found " + registrychanges + " registry changes.";
+                                }
+                            }
+                            else
+                            {
+                                main.windefendlogs.Add("Windows Security Notifications: " + "SOFTWARE\\Microsoft\\Windows Defender Security Center\\Notifications" + " not found.");
+                                registrychanges += 1;
+                                registrystatus = "and found " + registrychanges + " registry changes.";
+                            }
                             if (defendertelemetry != null)
                             {
                                 string[] subkeys5 = defendertelemetry.GetValueNames();
@@ -2895,6 +3026,7 @@ namespace MultronWinCare
                                 registrychanges += 1;
                                 registrystatus = "and found " + registrychanges + " registry changes.";
                             }
+                            
                             if (accountprotection != null)
                             {
                                 string[] subkeys5 = accountprotection.GetValueNames();
@@ -3374,6 +3506,298 @@ namespace MultronWinCare
                 MessageBox.Show("windefendchanges.txt created in " + filepath, "Multron WinCare", MessageBoxButton.OK, MessageBoxImage.Information);
             }
          
+        }
+        private void DoNothingAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+            var doNothingRadioButtons = new List<RadioButton>
+    {
+        DoNothingRadio,
+        DoNothingVirusThreatRadio,
+        DoNothingAccountProtectionRadio,
+        DoNothingFirewallRadio,
+        DoNothingAppBrowserRadio,
+        DoNothingDeviceSecurityRadio,
+        DoNothingDeviceHealthRadio,
+        DoNothingFamilyRadio,
+        DoNothingHistoryRadio,
+        DoNothingUIRadio,
+        DoNothingMNORadio,
+        DoNothingSecurityNotificationsRadio
+    }; 
+            foreach (var radioButton in doNothingRadioButtons)
+            {
+                if (radioButton != null)
+                {
+                    radioButton.IsChecked = true;
+                }
+            }
+        }
+        private void EnableAllButton_Click(object sender, RoutedEventArgs e)
+        {
+        
+            var enableRadioButtons = new List<RadioButton>
+    {
+        EnableDefenderRadio,
+        EnableVirusThreatRadio,
+        EnableAccountProtectionRadio,
+        EnableFirewallRadio,
+        EnableAppBrowserRadio,
+        EnableDeviceSecurityRadio,
+        EnableDeviceHealthRadio,
+        EnableFamilyRadio,
+        EnableHistoryRadio,
+        EnableDefenderUIRadio,
+        EnableMNONotificationsRadio,
+        EnableSecurityNotificationsRadio
+    };
+ 
+            foreach (var radioButton in enableRadioButtons)
+            {
+                if (radioButton != null)
+                {
+                    radioButton.IsChecked = true;
+                }
+            }
+        }
+
+        private void DisableAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+            var disableRadioButtons = new List<RadioButton>
+    {
+        DisableDefenderRadio,
+        DisableVirusThreatRadio,
+        DisableAccountProtectionRadio,
+        DisableFirewallRadio,
+        DisableAppBrowserRadio,
+        DisableDeviceSecurityRadio,
+        DisableDeviceHealthRadio,
+        DisableFamilyRadio,
+        DisableHistoryRadio,
+        DisableDefenderUIRadio,
+        DisableMNORadio,
+        DisableSecurityNotificationsRadio
+    };
+
+           
+            foreach (var radioButton in disableRadioButtons)
+            {
+                if (radioButton != null)
+                {
+                    radioButton.IsChecked = true;
+                }
+            }
+        }
+        public void enablesecuritycentertasks()
+        {
+            string[] tasks = {
+        @"\Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan",
+        @"\Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance",
+        @"\Microsoft\Windows\Windows Defender\Windows Defender Cleanup",
+        @"\Microsoft\Windows\Windows Defender\Windows Defender Verification"
+    };
+
+            foreach (var task in tasks)
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "schtasks",
+                        Arguments = $"/Change /TN \"{task}\" /ENABLE",
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    });
+                }
+                catch { }
+            }
+        }
+        public void disablesecuritycentertasks()
+        {
+            string[] tasks = {
+        @"\Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan",
+        @"\Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance",
+        @"\Microsoft\Windows\Windows Defender\Windows Defender Cleanup",
+        @"\Microsoft\Windows\Windows Defender\Windows Defender Verification"
+    };
+
+            foreach (var task in tasks)
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "schtasks",
+                        Arguments = $"/Change /TN \"{task}\" /DISABLE",
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    });
+                }
+                catch { }
+            }
+        }
+        public async Task enablesecurityandmaintenancenotifications()
+        {
+            int remake = 12;
+            int tried = 0;
+            DefenderStatusLabel.Text = "Security And Maintenance Notifications enablement process is in progress...";
+            await Task.Run(async () => {
+                while (tried < remake)
+                {
+                    RegistryKey smn = null;
+
+                   
+                    try { smn = Registry.Users.CreateSubKey(UserHelper.GetActiveUserSID() + @"\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.SecurityAndMaintenance", true); } catch { }
+                    try { smn?.DeleteValue("Enabled", false); } catch { }
+                    try { smn?.DeleteValue("ShowInActionCenter", false); } catch { }
+                    try { smn?.Close(); } catch { }
+                     
+                    try { smn = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer", true); } catch { }
+                    try { smn?.DeleteValue("HideSCAHealth", false); } catch { }
+                    try { smn?.Close(); } catch { }
+                     
+                    try { smn = Registry.Users.CreateSubKey(UserHelper.GetActiveUserSID() + @"\Software\Microsoft\Windows\CurrentVersion\Action Center\Checks", true); } catch { }
+                    try { smn?.DeleteValue("{C8E6F269-B90A-4053-A3BE-499AFCEC98C4}.check.0", false); } catch { }
+                    try { smn?.DeleteValue("{E8433B72-5842-4d43-8645-BC2C35960837}.check.0", false); } catch { }
+                    try { smn?.DeleteValue("{E8433B72-5842-4d43-8645-BC2C35960837}.check.100", false); } catch { }
+                    try { smn?.DeleteValue("{01979c6a-42fa-414c-b8aa-eee2c8202018}.check.0", false); } catch { }
+                    try { smn?.Close(); } catch { }
+                     
+                    try { smn = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Security Center", true); } catch { }
+                    try { smn?.DeleteValue("AntiVirusDisableNotify", false); } catch { }
+                    try { smn?.DeleteValue("FirewallDisableNotify", false); } catch { }
+                    try { smn?.DeleteValue("UpdatesDisableNotify", false); } catch { }
+                    try { smn?.DeleteValue("UacDisableNotify", false); } catch { }
+                    try { smn?.DeleteValue("AutoUpdateDisableNotify", false); } catch { }
+                    try { smn?.DeleteValue("AntiSpywareDisableNotify", false); } catch { }
+                    try { smn?.DeleteValue("InternetSettingsDisableNotify", false); } catch { }
+                    try { smn?.Close(); } catch { }
+
+                    tried++;
+                    await Task.Delay(50);
+                }
+            });
+        }
+        public async Task disablesecurityandmaintenancenotifications()
+        {
+            int remake = 12;
+            int tried = 0;
+            DefenderStatusLabel.Text = "Security And Maintenance Notifications disablement process is in progress...";
+            await Task.Run(async () => {
+                while (tried < remake)
+                {
+                    RegistryKey smn = null;
+                     
+                    try { smn = Registry.Users.CreateSubKey(UserHelper.GetActiveUserSID() + @"\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.SecurityAndMaintenance", true); } catch { }
+                    try { smn?.SetValue("Enabled", 0, RegistryValueKind.DWord); } catch { }
+                    try { smn?.SetValue("ShowInActionCenter", 0, RegistryValueKind.DWord); } catch { }
+                    try { smn?.Close(); } catch { }
+                     
+                    try { smn = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer", true); } catch { }
+                    try { smn?.SetValue("HideSCAHealth", 1, RegistryValueKind.DWord); } catch { }
+                    try { smn?.Close(); } catch { }
+                     
+                    try { smn = Registry.Users.CreateSubKey(UserHelper.GetActiveUserSID() + @"\Software\Microsoft\Windows\CurrentVersion\Action Center\Checks", true); } catch { }
+                    try { smn?.SetValue("{C8E6F269-B90A-4053-A3BE-499AFCEC98C4}.check.0", 0, RegistryValueKind.DWord); } catch { }
+                    try { smn?.SetValue("{E8433B72-5842-4d43-8645-BC2C35960837}.check.0", 0, RegistryValueKind.DWord); } catch { }
+                    try { smn?.SetValue("{E8433B72-5842-4d43-8645-BC2C35960837}.check.100", 0, RegistryValueKind.DWord); } catch { }
+                    try { smn?.SetValue("{01979c6a-42fa-414c-b8aa-eee2c8202018}.check.0", 0, RegistryValueKind.DWord); } catch { }
+                    try { smn?.Close(); } catch { }
+                     
+                    try { smn = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Security Center", true); } catch { }
+                    try { smn?.SetValue("AntiVirusDisableNotify", 1, RegistryValueKind.DWord); } catch { }
+                    try { smn?.SetValue("FirewallDisableNotify", 1, RegistryValueKind.DWord); } catch { }
+                    try { smn?.SetValue("UpdatesDisableNotify", 1, RegistryValueKind.DWord); } catch { }
+                    try { smn?.SetValue("UacDisableNotify", 1, RegistryValueKind.DWord); } catch { }
+                    try { smn?.SetValue("AutoUpdateDisableNotify", 1, RegistryValueKind.DWord); } catch { }
+                    try { smn?.SetValue("AntiSpywareDisableNotify", 1, RegistryValueKind.DWord); } catch { }
+                    try { smn?.SetValue("InternetSettingsDisableNotify", 1, RegistryValueKind.DWord); } catch { }
+                    try { smn?.Close(); } catch { }
+
+                    tried++;
+                    await Task.Delay(50);
+                }
+            });
+        }
+
+        public async Task enablewindowssecuritynotifications()
+        {
+            int remake = 12;
+            int tried = 0;
+            DefenderStatusLabel.Text = "Windows Security Notifications disablement UI process is in progress...";
+            await Task.Run(async () => {
+                while (tried < remake)
+                {
+                    RegistryKey wdscnotify = null;
+
+                    RegistryKey mwdscnotify = null;
+
+                    RegistryKey notificationsuppress = null;
+
+                    try { wdscnotify = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows Defender Security Center\Notifications"); } catch { }
+                    try { wdscnotify?.DeleteValue("DisableNotifications" ); } catch { }
+                    try { wdscnotify?.DeleteValue("DisableEnhancedNotifications" ); } catch { }
+                    try { wdscnotify?.Close(); } catch { }
+
+                    try { mwdscnotify = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications"); } catch { }
+                    try { mwdscnotify?.DeleteValue("DisableNotifications" ); } catch { }
+                    try { mwdscnotify?.DeleteValue("DisableEnhancedNotifications" ); } catch { }
+                    try { mwdscnotify?.Close(); } catch { }
+
+
+                    try { notificationsuppress = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender\UX Configuration"); } catch { }
+                    try { notificationsuppress?.DeleteValue("Notification_Suppress"); } catch { }
+                    try { notificationsuppress?.Close(); } catch { }
+                    tried++;
+                    await Task.Delay(50);
+                }
+            });
+
+
+
+
+
+        }
+        public async Task disablewindowssecuritynotifications()
+        {
+            int remake = 12;
+            int tried = 0;
+            DefenderStatusLabel.Text = "Windows Security Notifications disablement UI process is in progress...";
+            await Task.Run(async () => {
+                while (tried < remake)
+                {
+                    RegistryKey wdscnotify = null;
+
+                    RegistryKey mwdscnotify = null;
+
+                    RegistryKey notificationsuppress = null;
+
+                    try { wdscnotify = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows Defender Security Center\Notifications", true); } catch { }
+                    try { wdscnotify?.SetValue("DisableNotifications", 1, RegistryValueKind.DWord); } catch { }
+                    try { wdscnotify?.SetValue("DisableEnhancedNotifications", 1, RegistryValueKind.DWord); } catch { }
+                    try { wdscnotify?.Close(); } catch { }
+
+                    try { mwdscnotify = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications", true); } catch { }
+                    try { mwdscnotify?.SetValue("DisableNotifications", 1, RegistryValueKind.DWord); } catch { }
+                    try { mwdscnotify?.SetValue("DisableEnhancedNotifications", 1, RegistryValueKind.DWord); } catch { }
+                    try { mwdscnotify?.Close(); } catch { }
+
+
+                    try { notificationsuppress = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender\UX Configuration", true); } catch { }
+                    try { notificationsuppress?.SetValue("Notification_Suppress", 1, RegistryValueKind.DWord); } catch { }
+                    try { notificationsuppress?.Close(); } catch { }
+                    tried++;
+                    await Task.Delay(50);
+                }
+            });
+
+
+
+
+
         }
         public async Task disablewindowsdefenderui()
         {
@@ -5717,16 +6141,16 @@ namespace MultronWinCare
             try { localmachinedisablemessagebackuptomicrosoftaccount = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\SettingSync", true); } catch { }
 
             RegistryKey currentuserdisablesmsmmscloudsync = null;
-            try { currentuserdisablesmsmmscloudsync = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Messaging", true); } catch { }
+            try { currentuserdisablesmsmmscloudsync = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"SOFTWARE\Policies\Microsoft\Windows\Messaging", true); } catch { }
 
             RegistryKey disablegeneralsyncsettingsformessages = null;
-            try { disablegeneralsyncsettingsformessages = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Messaging", true); } catch { }
+            try { disablegeneralsyncsettingsformessages = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"SOFTWARE\Policies\Microsoft\Windows\Messaging", true); } catch { }
 
             RegistryKey localmachinewindowserrorreportingservice = null;
             try { localmachinewindowserrorreportingservice = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\WerSvc", true); } catch { }
 
             RegistryKey currentuserwindowserrorreporting = null;
-            try { currentuserwindowserrorreporting = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting", true); } catch { }
+            try { currentuserwindowserrorreporting = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting", true); } catch { }
 
             RegistryKey localmachinebiometricslogon = null;
             try { localmachinebiometricslogon = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", true); } catch { }
@@ -5755,10 +6179,10 @@ namespace MultronWinCare
             try { localmachineMicrosoftCEIPscheduled = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection", true); } catch { }
 
             RegistryKey currentuserDisableOfficeCeip = null;
-            try { currentuserDisableOfficeCeip = Registry.CurrentUser.CreateSubKey(@"Software\Policies\Microsoft\Office\Common\QMEnable", true); } catch { }
+            try { currentuserDisableOfficeCeip = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Policies\Microsoft\Office\Common\QMEnable", true); } catch { }
 
             RegistryKey currentuserDisableMicrosoftCeip = null;
-            try { currentuserDisableMicrosoftCeip = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\SQMClient", true); } catch { }
+            try { currentuserDisableMicrosoftCeip = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\SQMClient", true); } catch { }
 
             RegistryKey localmachineApplicationExperienceProgram = null;
             try { localmachineApplicationExperienceProgram = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\AppV\CEIP", true); } catch { }
@@ -5835,7 +6259,7 @@ namespace MultronWinCare
             RegistryKey bthModemParams = null;
             try { bthModemParams = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\BTHMODEM\Parameters", true); } catch { }
             RegistryKey bluetoothToastNotifications = null;
-            try { bluetoothToastNotifications = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.BluetoothDevice", true); } catch { }
+            try { bluetoothToastNotifications = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.BluetoothDevice", true); } catch { }
             RegistryKey deviceMetadata = null;
             try { deviceMetadata = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata", true); } catch { }
 
@@ -7167,6 +7591,9 @@ namespace MultronWinCare
             await enablefamilyoptionsarea();
             await enablewindowsecuritydeviceperformanceandhealtharea();
             await enablewindowsecurityhistoryarea();
+            await enablesecurityandmaintenancenotifications();
+            await enablewindowssecuritynotifications();
+            enablesecuritycentertasks();
             ApplyButton.IsEnabled = true;
             ResetButton.IsEnabled = true;
             processing1 = 0;
@@ -7196,7 +7623,7 @@ namespace MultronWinCare
                     {
                         if (wdFeatures == null)
                         {
-                             return;
+                            return;
                         }
 
                         object tamperValue = wdFeatures?.GetValue("TamperProtection");
@@ -7208,242 +7635,168 @@ namespace MultronWinCare
                                 MessageBox.Show("Tamper Protection is currently enabled. It must be disabled before attempting to disable Microsoft Defender, as it prevents modifications to core antivirus settings and registry keys", "Multron WinCare", MessageBoxButton.OK, MessageBoxImage.Warning);
 
                                 ApplyButton.IsEnabled = true;
-                                processing1 = 0; 
+                                processing1 = 0;
                                 return;
                             }
-                         
-                            
                         }
-                      
                     }
                 }
-                catch (Exception ex)
-                {  }
-               
+                catch (Exception ex) { }
+
+                disablesecuritycentertasks();
                 await disablewindowsdefender();
-              
                 status += "Microsoft Defender Disable Actions Applied.";
-            } else if(EnableDefenderRadio.IsChecked == true)
+            }
+            else if (EnableDefenderRadio.IsChecked == true)
             {
+                enablesecuritycentertasks();
                 await enablewindowsdefender();
                 status += "Microsoft Defender Enable Actions Applied.";
             }
-            if(EnableDefenderUIRadio.IsChecked == true)
+
+            switch (true)
             {
-                await enablewindowsdefenderui();
-                if(status != "")
-                {
-                    status += " And UI Enabled.";
-                } else
-                {
-                    status += "Windows Security Center UI enablement process is done.";
-                }
-            } else if(DisableDefenderUIRadio.IsChecked == true)
-            {
-                await disablewindowsdefenderui();
-                if (status != "")
-                {
-                    status += " And UI Disabled.";
-                }
-                else
-                {
-                    status += "Windows Security Center UI Disablement process is done.";
-                }
-            }
-            if(EnableVirusThreatRadio.IsChecked == true)
-            {
-                await uilockdownenable();
-                if (status != "")
-                {
-                    status += " And Virus And Threat Protection Area Enabled.";
-                }
-                else
-                {
-                    status += "Virus And Threat Protection Area Enablement process is done.";
-                }
-            } else if (DisableVirusThreatRadio.IsChecked == true)
-            {
-                await uilockdowndisable();
-                if (status != "")
-                {
-                    status += " And Virus And Threat Protection Area Disabled.";
-                }
-                else
-                {
-                    status += "Virus And Threat Protection Area Disablement process is done.";
-                }
-            }
-            if(EnableAccountProtectionRadio.IsChecked == true)
-            {
-                await enablewindowsecurityaccountprotectionarea();
-                if (status != "")
-                {
-                    status += " And Account Protection Area Enabled.";
-                }
-                else
-                {
-                    status += "Account Protection Area Enablement process is done.";
-                }
-            } else if (DisableAccountProtectionRadio.IsChecked == true)
-            {
-                await disablewindowsecurityaccountprotectionarea();
-                if (status != "")
-                {
-                    status += " And Account Protection Area Disabled.";
-                }
-                else
-                {
-                    status += "Account Protection Area Disablement process is done.";
-                }
-            }
-            if (EnableAppBrowserRadio.IsChecked == true)
-            {
-                await enablewindowsecurityappandbrowserprotectionarea();
-                if (status != "")
-                {
-                    status += " And App And Browser Control Area Enabled.";
-                }
-                else
-                {
-                    status += "App And Browser Control Area Enablement process is done.";
-                }
-            }
-            else if (DisableAppBrowserRadio.IsChecked == true)
-            {
-                await disablewindowsecurityappandbrowserprotectionarea();
-                if (status != "")
-                {
-                    status += " And App And Browser ControlArea Disabled.";
-                }
-                else
-                {
-                    status += "App And Browser Control Area Disablement process is done.";
-                }
-            }
-            if (EnableDeviceSecurityRadio.IsChecked == true)
-            {
-                await enablewindowsecuritydevicesecurityarea();
-                if (status != "")
-                {
-                    status += " And Device Security Area Enabled.";
-                }
-                else
-                {
-                    status += "Device Security Area Enablement process is done.";
-                }
-            }
-            else if (DisableDeviceSecurityRadio.IsChecked == true)
-            {
-                await disablewindowsecuritydevicesecurityarea();
-                if (status != "")
-                {
-                    status += " And Device Security Area Disabled.";
-                }
-                else
-                {
-                    status += "Device Security Area Disablement process is done.";
-                }
+                case bool _ when EnableDefenderUIRadio.IsChecked == true:
+                    await enablewindowsdefenderui();
+                    status += string.IsNullOrEmpty(status) ? "Windows Security Center UI enablement process is done." : " And UI Enabled.";
+                    break;
+
+                case bool _ when DisableDefenderUIRadio.IsChecked == true:
+                    await disablewindowsdefenderui();
+                    status += string.IsNullOrEmpty(status) ? "Windows Security Center UI Disablement process is done." : " And UI Disabled.";
+                    break;
             }
 
-          
-            if (EnableFirewallRadio.IsChecked == true)
+            switch (true)
             {
-                await enablefirewallandnetworkprotectionarea();
-                if (status != "")
-                {
-                    status += " And Firewall And Network Protection Area Enabled.";
-                }
-                else
-                {
-                    status += "Firewall And Network Protection Area Enablement process is done.";
-                }
-            }
-            else if (DisableFirewallRadio.IsChecked == true)
-            {
-                await disablefirewallandnetworkprotectionarea();
-                if (status != "")
-                {
-                    status += " And Firewall And Network Protection Area Disabled.";
-                }
-                else
-                {
-                    status += "Firewall And Network Protection Area Disablement process is done.";
-                }
+                case bool _ when EnableVirusThreatRadio.IsChecked == true:
+                    await uilockdownenable();
+                    status += string.IsNullOrEmpty(status) ? "Virus And Threat Protection Area Enablement process is done." : " And Virus And Threat Protection Area Enabled.";
+                    break;
+
+                case bool _ when DisableVirusThreatRadio.IsChecked == true:
+                    await uilockdowndisable();
+                    status += string.IsNullOrEmpty(status) ? "Virus And Threat Protection Area Disablement process is done." : " And Virus And Threat Protection Area Disabled.";
+                    break;
             }
 
-            if (EnableFamilyRadio.IsChecked == true)
+            switch (true)
             {
-                await enablefamilyoptionsarea();
-                if (status != "")
-                {
-                    status += " And Family Options Area Enabled.";
-                }
-                else
-                {
-                    status += "Family Options Area Enablement process is done.";
-                }
+                case bool _ when EnableAccountProtectionRadio.IsChecked == true:
+                    await enablewindowsecurityaccountprotectionarea();
+                    status += string.IsNullOrEmpty(status) ? "Account Protection Area Enablement process is done." : " And Account Protection Area Enabled.";
+                    break;
+
+                case bool _ when DisableAccountProtectionRadio.IsChecked == true:
+                    await disablewindowsecurityaccountprotectionarea();
+                    status += string.IsNullOrEmpty(status) ? "Account Protection Area Disablement process is done." : " And Account Protection Area Disabled.";
+                    break;
             }
-            else if (DisableFamilyRadio.IsChecked == true)
+
+            switch (true)
             {
-                await disablefamilyoptionsarea();
-                if (status != "")
-                {
-                    status += " And Family Options Area Disabled.";
-                }
-                else
-                {
-                    status += "Family Options Area Disablement process is done.";
-                }
+                case bool _ when EnableAppBrowserRadio.IsChecked == true:
+                    await enablewindowsecurityappandbrowserprotectionarea();
+                    status += string.IsNullOrEmpty(status) ? "App And Browser Control Area Enablement process is done." : " And App And Browser Control Area Enabled.";
+                    break;
+
+                case bool _ when DisableAppBrowserRadio.IsChecked == true:
+                    await disablewindowsecurityappandbrowserprotectionarea();
+                    status += string.IsNullOrEmpty(status) ? "App And Browser Control Area Disablement process is done." : " And App And Browser Control Area Disabled.";
+                    break;
             }
-            if (EnableDeviceHealthRadio.IsChecked == true)
+
+            switch (true)
             {
-                await enablewindowsecuritydeviceperformanceandhealtharea();
-                if (status != "")
-                {
-                    status += " And Device Performance And Health Area Enabled.";
-                }
-                else
-                {
-                    status += "Device Performance And Health Area Enablement process is done.";
-                }
+                case bool _ when EnableDeviceSecurityRadio.IsChecked == true:
+                    await enablewindowsecuritydevicesecurityarea();
+                    status += string.IsNullOrEmpty(status) ? "Device Security Area Enablement process is done." : " And Device Security Area Enabled.";
+                    break;
+
+                case bool _ when DisableDeviceSecurityRadio.IsChecked == true:
+                    await disablewindowsecuritydevicesecurityarea();
+                    status += string.IsNullOrEmpty(status) ? "Device Security Area Disablement process is done." : " And Device Security Area Disabled.";
+                    break;
             }
-            else if (DisableDeviceHealthRadio.IsChecked == true)
+
+            switch (true)
             {
-                await disablewindowsecuritydeviceperformanceandhealtharea();
-                if (status != "")
-                {
-                    status += " And Device Performance And Health Area Disabled.";
-                }
-                else
-                {
-                    status += "Device Performance And Health Area Disablement process is done.";
-                }
+                case bool _ when EnableFirewallRadio.IsChecked == true:
+                    await enablefirewallandnetworkprotectionarea();
+                    status += string.IsNullOrEmpty(status) ? "Firewall And Network Protection Area Enablement process is done." : " And Firewall And Network Protection Area Enabled.";
+                    break;
+
+                case bool _ when DisableFirewallRadio.IsChecked == true:
+                    await disablefirewallandnetworkprotectionarea();
+                    status += string.IsNullOrEmpty(status) ? "Firewall And Network Protection Area Disablement process is done." : " And Firewall And Network Protection Area Disabled.";
+                    break;
             }
-            if (EnableHistoryRadio.IsChecked == true)
+
+            switch (true)
             {
-                await disablewindowsecurityhistoryarea();
-                if (status != "")
-                {
-                    status += " And Protection History Area Enabled.";
-                }
-                else
-                {
-                    status += "Protection History Area Enablement process is done.";
-                }
+                case bool _ when EnableFamilyRadio.IsChecked == true:
+                    await enablefamilyoptionsarea();
+                    status += string.IsNullOrEmpty(status) ? "Family Options Area Enablement process is done." : " And Family Options Area Enabled.";
+                    break;
+
+                case bool _ when DisableFamilyRadio.IsChecked == true:
+                    await disablefamilyoptionsarea();
+                    status += string.IsNullOrEmpty(status) ? "Family Options Area Disablement process is done." : " And Family Options Area Disabled.";
+                    break;
             }
-            else if (DisableHistoryRadio.IsChecked == true)
+
+            switch (true)
             {
-                await  disablewindowsecurityhistoryarea();
-                if (status != "")
-                {
-                    status += " And Protection History Area Disabled.";
-                }
-                else
-                {
-                    status += "Protection History Area Disablement process is done.";
-                }
+                case bool _ when EnableDeviceHealthRadio.IsChecked == true:
+                    await enablewindowsecuritydeviceperformanceandhealtharea();
+                    status += string.IsNullOrEmpty(status) ? "Device Performance And Health Area Enablement process is done." : " And Device Performance And Health Area Enabled.";
+                    break;
+
+                case bool _ when DisableDeviceHealthRadio.IsChecked == true:
+                    await disablewindowsecuritydeviceperformanceandhealtharea();
+                    status += string.IsNullOrEmpty(status) ? "Device Performance And Health Area Disablement process is done." : " And Device Performance And Health Area Disabled.";
+                    break;
             }
-          
+
+            switch (true)
+            {
+                case bool _ when EnableHistoryRadio.IsChecked == true:
+                    await disablewindowsecurityhistoryarea();
+                    status += string.IsNullOrEmpty(status) ? "Protection History Area Enablement process is done." : " And Protection History Area Enabled.";
+                    break;
+
+                case bool _ when DisableHistoryRadio.IsChecked == true:
+                    await disablewindowsecurityhistoryarea();
+                    status += string.IsNullOrEmpty(status) ? "Protection History Area Disablement process is done." : " And Protection History Area Disabled.";
+                    break;
+            }
+
+            switch (true)
+            {
+                case bool _ when DisableSecurityNotificationsRadio.IsChecked == true:
+                    await disablewindowssecuritynotifications();
+                    status += string.IsNullOrEmpty(status) ? "Windows Security Notifications Disablement process is done." : " And Windows Security Notifications Disabled.";
+                    break;
+
+                case bool _ when EnableSecurityNotificationsRadio.IsChecked == true:
+                    await enablewindowssecuritynotifications();
+                    status += string.IsNullOrEmpty(status) ? "Windows Security Notifications Enablement process is done." : " And Windows Security Notifications Enabled.";
+                    break;
+            }
+
+            switch (true)
+            {
+                case bool _ when DisableMNORadio.IsChecked == true:
+                    await disablesecurityandmaintenancenotifications();
+                    status += string.IsNullOrEmpty(status) ? "Security And Maintenance Notifications Disablement process is done." : " And Security and Maintenance Notifications Disabled.";
+                    break;
+
+                case bool _ when EnableMNONotificationsRadio.IsChecked == true:
+                    await enablesecurityandmaintenancenotifications();
+                    status += string.IsNullOrEmpty(status) ? "Security And Maintenance Notifications Enablement process is done." : " And Security And Maintenance Notifications Enabled.";
+                    break;
+            }
+
             status += " You need to restart your system for the changes to take effect completely.";
             ApplyButton.IsEnabled = true;
             ResetButton.IsEnabled = true;
