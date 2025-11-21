@@ -634,7 +634,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0,0,0">
-                         <TextBlock Text="Multron WinCare v1.2 beta" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" VerticalAlignment="Center"/>
+                         <TextBlock Text="Multron WinCare v1.2.1 beta" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" VerticalAlignment="Center"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
@@ -710,8 +710,12 @@
 
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,20">
                                             <Button x:Name="ApplyButton" Content="Apply Settings" Width="138" Margin="0,0,10,0" Style="{StaticResource ActionButtonStyle}" Click="ApplyButton_Click"/>
-                                            <Button x:Name="ResetButton" Content="Reset to Default" Width="140" Style="{StaticResource ActionButtonStyle}" Click="ResetClickDefender" Background="{DynamicResource ToggleOffBrush}"/>
+                                            <Button x:Name="ResetButton" Content="Reset to Default" Width="140" Margin="0,0,10,0" Style="{StaticResource ActionButtonStyle}" Click="ResetClickDefender" Background="{DynamicResource ToggleOffBrush}"/>
+                                            <Button x:Name="EnableAllButton" Content="Enable All" Width="120" Margin="0,0,10,0" Style="{StaticResource ActionButtonStyle}" Click="EnableAllButton_Click" Background="#4CAF50" Foreground="White"/>
+                                            <Button x:Name="DisableAllButton" Content="Disable All" Width="120" Margin="0,0,10,0" Style="{StaticResource ActionButtonStyle}" Click="DisableAllButton_Click" Background="#FF9800" Foreground="White"/>
+                                            <Button x:Name="DoNothingAllButton" Content="Do Nothing" Width="120" Margin="0,0,0,0" Style="{StaticResource ActionButtonStyle}" Click="DoNothingAllButton_Click" Background="#9E9E9E" Foreground="White"/>
                                         </StackPanel>
+
                                         <TextBlock Text="Protection Options:" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" Margin="0,10,0,5"/>
                                         <StackPanel Margin="0,5,0,0">
                                             <RadioButton x:Name="EnableDefenderRadio" Content="Enable Microsoft Defender" GroupName="DefenderOptions" Margin="0,8,0,0"/>
@@ -781,7 +785,18 @@
                                             <RadioButton x:Name="DisableDefenderUIRadio" Content="Disable Windows Security Interface" GroupName="DefenderUIOptions" Margin="0,8,0,0"/>
                                             <RadioButton x:Name="DoNothingUIRadio" Content="Do Nothing" GroupName="DefenderUIOptions" Margin="0,8,0,15" IsChecked="True"/>
                                         </StackPanel>
-
+                                        <TextBlock Text="Security And Maintenance Notification Options:" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" Margin="0,10,0,5"/>
+                                        <StackPanel Margin="0,5,0,0">
+                                            <RadioButton x:Name="EnableMNONotificationsRadio" Content="Enable Security And Maintenance Notifications" GroupName="MNONotificationsOptions" Margin="0,8,0,0"/>
+                                            <RadioButton x:Name="DisableMNORadio" Content="Disable Security And Maintenance Notifications" GroupName="MNONotificationsOptions" Margin="0,8,0,0"/>
+                                            <RadioButton x:Name="DoNothingMNORadio" Content="Do Nothing" GroupName="MNONotificationsOptions" Margin="0,8,0,15" IsChecked="True"/>
+                                        </StackPanel>
+                                        <TextBlock Text="Security Notifications Options:" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" Margin="0,10,0,5"/>
+                                        <StackPanel Margin="0,5,0,0">
+                                            <RadioButton x:Name="EnableSecurityNotificationsRadio" Content="Enable Security Notifications" GroupName="SecurityNotificationsOptions" Margin="0,8,0,0"/>
+                                            <RadioButton x:Name="DisableSecurityNotificationsRadio" Content="Disable Security Notifications" GroupName="SecurityNotificationsOptions" Margin="0,8,0,0"/>
+                                            <RadioButton x:Name="DoNothingSecurityNotificationsRadio" Content="Do Nothing" GroupName="SecurityNotificationsOptions" Margin="0,8,0,15" IsChecked="True"/>
+                                        </StackPanel>
                                     </StackPanel>
 
                                     <Button Grid.Column="1" Width="40" Height="40" Margin="10,0,0,0" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Click="WinDefendIconButton_Click">
@@ -842,7 +857,7 @@
  
                             <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
                                 <StackPanel>
-                                    <TextBlock Text="Multron WinCare v1.2 beta" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource PrimaryText}" Margin="0,0,0,10"/>
+                                    <TextBlock Text="Multron WinCare v1.2.1 beta" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource PrimaryText}" Margin="0,0,0,10"/>
                                     <TextBlock Text="BETA VERSION - UNDER ACTIVE DEVELOPMENT" FontSize="14" FontWeight="Bold" Foreground="#FFE91E63" Margin="0,0,0,15"/>
 
                                     <TextBlock TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource SecondaryText}" Margin="0,0,0,20">
@@ -993,7 +1008,7 @@
                            Foreground="{DynamicResource SecondaryText}"
                            Margin="0,0,0,15"
                            TextAlignment="Left">
-                    <Run FontWeight="SemiBold" Text="Current Beta Features (v1.0):"/>
+                    <Run FontWeight="SemiBold" Text="Current Beta Features (v1.2.1):"/>
                     <LineBreak/>
                     <Run Text="✓ Windows Update management"/>
                     <LineBreak/>
@@ -1080,8 +1095,8 @@
                                         <Border Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="25">
                                             <StackPanel HorizontalAlignment="Center">
                                                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE946;" FontSize="48" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                                                <TextBlock Text="Version 1.2 Beta" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="Build 2025.11.14" FontSize="12" Foreground="{DynamicResource SecondaryText}" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                                <TextBlock Text="Version 1.2.1 Beta" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Build 2025.11.20" FontSize="12" Foreground="{DynamicResource SecondaryText}" HorizontalAlignment="Center" Margin="0,4,0,0"/>
                                             </StackPanel>
                                         </Border>
                                     </StackPanel>
