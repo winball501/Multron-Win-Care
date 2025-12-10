@@ -264,7 +264,7 @@ namespace MultronWinCare
             static extern void WTSFreeMemory(IntPtr pointer);
 
             [DllImport("kernel32.dll")]
-            static extern int WTSGetActiveConsoleSessionId();
+            static extern uint WTSGetActiveConsoleSessionId();
 
             enum WTS_INFO_CLASS
             {
@@ -274,46 +274,68 @@ namespace MultronWinCare
 
             public static string GetActiveUserSID()
             {
-                int sessionId = WTSGetActiveConsoleSessionId();
-
-                IntPtr buffer;
-                int bytesReturned;
-                string userName = null;
-                string domainName = null;
-
-                if (WTSQuerySessionInformation(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned) && bytesReturned > 1)
+                try
                 {
-                    userName = Marshal.PtrToStringAnsi(buffer);
-                    WTSFreeMemory(buffer);
-                }
+                    uint sessionId = WTSGetActiveConsoleSessionId();
+                     
+                    if (sessionId == 0xFFFFFFFF)
+                        return null;
 
-                if (WTSQuerySessionInformation(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSDomainName, out buffer, out bytesReturned) && bytesReturned > 1)
-                {
-                    domainName = Marshal.PtrToStringAnsi(buffer);
-                    WTSFreeMemory(buffer);
-                }
+                    IntPtr buffer;
+                    int bytesReturned;
+                    string userName = null;
+                    string domainName = null;
 
-                if (string.IsNullOrEmpty(userName))
-                    return null;
-                 
-                string userSid = null;
-                using (var profileList = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"))
-                {
-                    foreach (var sid in profileList.GetSubKeyNames())
+                    if (WTSQuerySessionInformation(IntPtr.Zero, (int)sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned) && bytesReturned > 1)
                     {
-                        using (var key = profileList.OpenSubKey(sid))
+                        userName = Marshal.PtrToStringAnsi(buffer);
+                        WTSFreeMemory(buffer);
+                    }
+
+                    if (WTSQuerySessionInformation(IntPtr.Zero, (int)sessionId, WTS_INFO_CLASS.WTSDomainName, out buffer, out bytesReturned) && bytesReturned > 1)
+                    {
+                        domainName = Marshal.PtrToStringAnsi(buffer);
+                        WTSFreeMemory(buffer);
+                    }
+
+                    if (string.IsNullOrEmpty(userName))
+                        return null;
+
+                    string userSid = null;
+                    using (var profileList = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"))
+                    {
+                        if (profileList == null)
+                            return null;
+
+                        foreach (var sid in profileList.GetSubKeyNames())
                         {
-                            string profilePath = key.GetValue("ProfileImagePath") as string;
-                            if (!string.IsNullOrEmpty(profilePath) && profilePath.EndsWith(userName, StringComparison.OrdinalIgnoreCase))
+                            try
                             {
-                                userSid = sid;
-                                break;
+                                using (var key = profileList.OpenSubKey(sid))
+                                {
+                                    if (key == null) continue;
+
+                                    string profilePath = key.GetValue("ProfileImagePath") as string;
+                                    if (!string.IsNullOrEmpty(profilePath) && profilePath.EndsWith(userName, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        userSid = sid;
+                                        break;
+                                    }
+                                }
+                            }
+                            catch
+                            { 
+                                continue;
                             }
                         }
                     }
-                }
 
-                return userSid;
+                    return userSid;
+                }
+                catch
+                { 
+                    return null;
+                }
             }
         }
         public class PrivacyTelemetryAreaMonitor
@@ -452,49 +474,94 @@ namespace MultronWinCare
                     RegistryKey bthModemParams = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\BTHMODEM\Parameters");
                 
                     RegistryKey deviceMetadata = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata");
+                    string userSid = UserHelper.GetActiveUserSID();
+                    RegistryKey bluetoothToastNotifications = null;
+                    RegistryKey currentuseraccountinfo = null;
 
-                    RegistryKey bluetoothToastNotifications = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.BluetoothDevice");
-                    RegistryKey currentuseraccountinfo = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation");
+                    RegistryKey currentuserExplorerAdvanced = null;
 
-                    RegistryKey currentuserExplorerAdvanced = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced");
+                    RegistryKey currentuserADC = null;
 
-                    RegistryKey currentuserADC = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo");
+                    RegistryKey currentuserContentDelivery = null;
 
-                    RegistryKey currentuserContentDelivery = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager");
+                    RegistryKey currentuserFeeds = null;
 
-                    RegistryKey currentuserFeeds = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Feeds");
+                    RegistryKey currentuserExplorer = null;
 
-                    RegistryKey currentuserExplorer = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Policies\Explorer");
+                    RegistryKey currentuserMobility = null;
 
-                    RegistryKey currentuserMobility = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Mobility");
+                    RegistryKey currentuserAppAccessUserAccountInfo = null;
 
-                    RegistryKey currentuserAppAccessUserAccountInfo = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation");
+                    RegistryKey currentuserAppAccessDiagnostics = null;
 
-                    RegistryKey currentuserAppAccessDiagnostics = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics");
+                    RegistryKey currentuserAppAccessLocation = null;
 
-                    RegistryKey currentuserAppAccessLocation = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location");
+                    RegistryKey currentUserAppAccessUserAccountInfo = null;
 
-                    RegistryKey currentUserAppAccessUserAccountInfo = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation");
+                    RegistryKey currentuserClipboard = null;
 
-                    RegistryKey currentuserClipboard = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Clipboard");
+                    RegistryKey currentuserDisableOfficeCeip = null;
 
-                    RegistryKey currentuserDisableOfficeCeip = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Policies\Microsoft\Office\Common\QMEnable");
-                
 
-                 
 
-                    RegistryKey currentuserwindowserrorreporting = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\Windows Error Reporting");
 
-                    RegistryKey currentuserdisablesmsmmscloudsync = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Messaging");
+                    RegistryKey currentuserwindowserrorreporting = null;
 
-                    RegistryKey currentuserDisableAdvertisingID = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo");
+                    RegistryKey currentuserdisablesmsmmscloudsync = null;
 
-                    RegistryKey disablegeneralsyncsettingsformessages = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Messaging");
+                    RegistryKey currentuserDisableAdvertisingID = null;
 
-                    RegistryKey currentuserDisableMicrosoftCeip = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\SQMClient");
+                    RegistryKey disablegeneralsyncsettingsformessages = null;
 
-                 
-                    while(true)
+                    RegistryKey currentuserDisableMicrosoftCeip = null;
+
+                    if (!string.IsNullOrEmpty(userSid))
+                    {
+                       bluetoothToastNotifications = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.BluetoothDevice");
+                         currentuseraccountinfo = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation");
+
+                        currentuserExplorerAdvanced = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced");
+
+                         currentuserADC = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo");
+
+                        currentuserContentDelivery = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager");
+
+                        currentuserFeeds = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Feeds");
+
+                        currentuserExplorer = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Policies\Explorer");
+
+                        currentuserMobility = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\Mobility");
+
+                        currentuserAppAccessUserAccountInfo = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation");
+
+                         currentuserAppAccessDiagnostics = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics");
+
+                        currentuserAppAccessLocation = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location");
+
+                         currentUserAppAccessUserAccountInfo = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation");
+
+                         currentuserClipboard = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Clipboard");
+
+                         currentuserDisableOfficeCeip = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Policies\Microsoft\Office\Common\QMEnable");
+
+
+
+
+                         currentuserwindowserrorreporting = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\Windows Error Reporting");
+
+                        currentuserdisablesmsmmscloudsync = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Messaging");
+
+                        currentuserDisableAdvertisingID = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo");
+
+                         disablegeneralsyncsettingsformessages = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Messaging");
+
+                        currentuserDisableMicrosoftCeip = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"Software\Microsoft\SQMClient");
+
+
+                    }
+
+
+                    while (true)
                     {
                         if (main.processing4 != 1)
                         {
@@ -2670,7 +2737,9 @@ namespace MultronWinCare
             {
                 try
                 {
-                 
+
+                    string userSid = UserHelper.GetActiveUserSID();
+
                     ServiceController windefend = new ServiceController("WinDefend");
                   
                     RegistryKey vtp = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows Defender Security Center\Virus and threat protection"); 
@@ -2705,10 +2774,18 @@ namespace MultronWinCare
                     RegistryKey wdscnotify = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows Defender Security Center\Notifications");
                     RegistryKey mwdscnotify = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications");
                     RegistryKey uxnotify = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows Defender\UX Configuration");
-                    RegistryKey securityandmaintenanceToastNotify = Registry.Users.CreateSubKey(UserHelper.GetActiveUserSID() + @"\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.SecurityAndMaintenance");
+                
+             
                     RegistryKey WindowsExplorer = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Explorer");
                     RegistryKey securitycenter = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Security Center");
-                    RegistryKey securitycenterchangesinacitoncenter = Registry.Users.CreateSubKey(UserHelper.GetActiveUserSID() + @"\Software\Microsoft\Windows\CurrentVersion\Action Center\Checks");
+                    RegistryKey securityandmaintenanceToastNotify = null;
+                    RegistryKey securitycenterchangesinacitoncenter = null;
+                    if (!string.IsNullOrEmpty(userSid))
+                    {
+                        securityandmaintenanceToastNotify = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.SecurityAndMaintenance");
+                        securitycenterchangesinacitoncenter = Registry.Users.OpenSubKey(UserHelper.GetActiveUserSID() + @"\Software\Microsoft\Windows\CurrentVersion\Action Center\Checks");
+                    }
+                   
                     while (true)
                         {
 
@@ -5569,7 +5646,14 @@ namespace MultronWinCare
                     status += "Windows Windows Update Area Disable Actions Applied.";
                 }
             }
-            status += " You need to restart your system for the changes to take effect completely.";
+            if (status == "")
+            {
+                status = "There are no options to choose from, there's nothing to apply.";
+            }
+            else
+            {
+                status += " You need to restart your system for the changes to take effect completely.";
+            }
             WindowsUpdateStatusLabel.Text = status;
             processing3 = 0;
             tokenreset(ref cts3, ref token3);
@@ -7564,7 +7648,14 @@ namespace MultronWinCare
                     status += "Windows Firewall Notifications Disable Actions Applied.";
                 }
             }
-            status += " You need to restart your system for the changes to take effect completely.";
+            if (status == "")
+            {
+                status = "There are no options to choose from, there's nothing to apply.";
+            }
+            else
+            {
+                status += " You need to restart your system for the changes to take effect completely.";
+            }
             FirewallStatusLabel.Text = status;
             processing2 = 0;
             tokenreset(ref cts2, ref token2);
@@ -7653,12 +7744,13 @@ namespace MultronWinCare
                 await enablewindowsdefender();
                 status += "Microsoft Defender Enable Actions Applied.";
             }
-
+ 
             switch (true)
             {
                 case bool _ when EnableDefenderUIRadio.IsChecked == true:
                     await enablewindowsdefenderui();
                     status += string.IsNullOrEmpty(status) ? "Windows Security Center UI enablement process is done." : " And UI Enabled.";
+                    
                     break;
 
                 case bool _ when DisableDefenderUIRadio.IsChecked == true:
@@ -7796,8 +7888,15 @@ namespace MultronWinCare
                     status += string.IsNullOrEmpty(status) ? "Security And Maintenance Notifications Enablement process is done." : " And Security And Maintenance Notifications Enabled.";
                     break;
             }
-
-            status += " You need to restart your system for the changes to take effect completely.";
+            if (status == "")
+            {
+                status = "There are no options to choose from, there's nothing to apply.";
+            }
+            else
+            {
+                status += " You need to restart your system for the changes to take effect completely.";
+            }
+                
             ApplyButton.IsEnabled = true;
             ResetButton.IsEnabled = true;
             processing1 = 0;
