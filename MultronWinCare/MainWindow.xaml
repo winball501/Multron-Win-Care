@@ -1096,7 +1096,7 @@
                                             <StackPanel HorizontalAlignment="Center">
                                                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE946;" FontSize="48" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                                                 <TextBlock Text="Version 1.2.2 Beta" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryText}" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="Build 2025.11.20" FontSize="12" Foreground="{DynamicResource SecondaryText}" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                                <TextBlock Text="Build 2025.12.10" FontSize="12" Foreground="{DynamicResource SecondaryText}" HorizontalAlignment="Center" Margin="0,4,0,0"/>
                                             </StackPanel>
                                         </Border>
                                     </StackPanel>
